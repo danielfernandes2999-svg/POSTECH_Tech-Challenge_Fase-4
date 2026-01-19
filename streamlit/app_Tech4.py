@@ -4,6 +4,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import os
 import matplotlib.pyplot as plt
+API_URL = os.getenv('API_URL', 'http://api:5000')
 
 # Arquivo de log de consultas
 LOG_FILE = "logs/consultas.csv"
@@ -16,7 +17,7 @@ st.title("Previsão Índice B3")
 # Bloco de Métricas em Destaque 
 st.write("### 🏆 Desempenho do Modelo")
 try:
-    response_metrics = requests.get(f"{os.getenv('API_URL', 'http://api:5000')}/metrics", timeout=10)
+    response_metrics = requests.get(f"{API_URL}/metrics", timeout=10)
     if response_metrics.status_code == 200:
         metrics = response_metrics.json()
         
@@ -137,7 +138,8 @@ if st.button("Prever"):
     }
     
     try:
-        response = requests.post("http://api:5000/predict", json=novo_registro, timeout=10)
+        
+        response = requests.post(f"{API_URL}/predict", json=novo_registro, timeout=10)
         
         if response.status_code == 200:
             result = response.json()
