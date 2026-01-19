@@ -1,0 +1,32 @@
+services:
+  api:
+    build: ./api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./modelo:/app/modelo
+      - ./Dados:/app/Dados
+      - ./logs:/app/logs
+    restart: always
+
+  streamlit:
+    build: ./streamlit
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    volumes:
+      - ./Dados:/app/Dados
+      - ./logs:/app/logs
+    environment:
+      - API_URL=http://api:5000
+    restart: always
+
+  train:
+    build:
+      context: .
+      dockerfile: train/Dockerfile
+    volumes:
+      - ./modelo:/app/modelo
+      - ./Dados:/app/Dados
+    command: python train.py
